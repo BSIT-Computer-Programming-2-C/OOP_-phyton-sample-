@@ -1,0 +1,57 @@
+# Abstraction:  We hide the complex details of how health is calculated or how attacks work.
+# Encapsulation:  Character attributes and methods are bundled within the class.
+
+class Character:
+    def __init__(self, name, health, attack):
+        self._name = name  # Protected attribute (conventionally indicated by _)
+        self._health = health
+        self._attack = attack
+
+    def get_name(self):
+        return self._name
+
+    def is_alive(self):
+        return self._health > 0
+
+    def attack(self, target):
+        if self.is_alive():
+            damage = self._attack
+            target.take_damage(damage)
+            print(f"{self._name} attacks {target.get_name()} for {damage} damage!")
+        else:
+            print(f"{self._name} is already defeated.")
+
+    def take_damage(self, damage):
+        self._health -= damage
+        print(f"{self._name} takes {damage} damage!")
+
+
+# Inheritance:  Warrior and Mage inherit from Character
+class Warrior(Character):
+    def __init__(self, name):
+        super().__init__(name, 100, 20)  # Warrior starts with 100 health and 20 attack
+
+
+class Mage(Character):
+    def __init__(self, name):
+        super().__init__(name, 80, 15)  # Mage starts with 80 health and 15 attack
+        self._magic_power = 30 #Add a unique attribute
+
+
+    def attack(self, target):  # Polymorphism: Mage's attack is different
+        if self.is_alive():
+            damage = self._attack + self._magic_power
+            target.take_damage(damage)
+            print(f"{self._name} casts a spell, attacking {target.get_name()} for {damage} damage!")
+        else:
+            print(f"{self._name} is already defeated.")
+
+
+# Example usage:
+warrior = Warrior("Braveheart")
+mage = Mage("Merlin")
+
+warrior.attack(mage)
+mage.attack(warrior)
+print(f"{mage.get_name()}'s health: {mage._health}") #Accessing protected member for demonstration. Avoid in production code.
+
